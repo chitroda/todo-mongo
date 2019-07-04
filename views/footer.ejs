@@ -1,0 +1,136 @@
+	<script src="/public/js/script.js"></script>
+	<% if(current_url === '/'){ %>
+	<script type="text/javascript">
+		jQuery(document).ready(function($){
+			$('body').on('click', '.todo_list ul li', function(){
+				var $this = $(this);
+				$.ajax({
+					type: 'POST',
+					url: '/update_todo',
+					data: {todo_id: $(this).attr('data-id')},
+					success: function(data){
+						console.log(data);
+						if(data === true){
+							$this.find('span:first-child').addClass('li-stire');
+							$this.find('span:last-child').addClass('text-success');
+							$this.find('span:last-child').removeClass('text-danger');
+							$this.find('span:last-child').text('completed');
+						}
+						else{
+							$this.find('span:first-child').removeClass('li-stire');
+							$this.find('span:last-child').removeClass('text-success');
+							$this.find('span:last-child').addClass('text-danger');
+							$this.find('span:last-child').text('incomplete');
+						}
+					},
+					error: function(err){
+						console.log(err);
+					}
+				});
+			});
+		});
+	</script>
+		<% if(name){ %>
+			<script type="text/javascript">
+				document.addEventListener('DOMContentLoaded', function() {
+					$.ajax({
+						type: 'POST',
+						url: '/show',
+						success: function(result){
+							$('.todo_list ul').empty();
+							$('.todo_old_list ul').empty();
+							$('.todo_old_list table tbody').empty();
+							let today_date = new Date().toJSON().split('T')[0];
+							$.each(result, function(i, res){
+								if(res.old_todo){
+									if(today_date === res.time_stamp){
+										$('.todo_list ul').append('<li data-id="'+res.todo_id+'"><span class="li-stire">'+res.todo_name+'</span><span class="badge text-success">completed</span></li>');
+									}
+									else{
+										//$('.todo_old_list ul').append('<li data-id="'+res.todo_id+'" class="disabled"><span class="li-stire">'+res.todo_name+'</span><span class="badge text-success">completed</span></li>');
+										$('.todo_old_list table tbody').append('<tr data-id="'+res.todo_id+'"><td class="disabled"><span class="li-stire">'+res.todo_name+'</span><span class="badge text-success">completed</span></td><td><button type="button" class="btn text-danger" data-id="'+res.todo_id+'">Delete</button></td></tr>');
+									}
+								}
+								else{
+									if(today_date === res.time_stamp){
+										$('.todo_list ul').append('<li data-id="'+res.todo_id+'"><span>'+res.todo_name+'</span><span class="badge text-danger">incomplete</span></li>');
+									}
+									else{
+										//$('.todo_old_list ul').append('<li data-id="'+res.todo_id+'" class="disabled"><span>'+res.todo_name+'</span><span class="badge text-danger">incomplete</span></li>');
+										$('.todo_old_list table tbody').append('<tr data-id="'+res.todo_id+'"><td class="disabled"><span class="li-stire">'+res.todo_name+'</span><span class="badge text-danger">incomplete</span></td><td><button type="button" class="btn text-danger" data-id="'+res.todo_id+'">Delete</button></td></tr>');
+									}
+								}
+							});
+						},
+						error: function(err){
+							console.log(err);
+						}
+					});
+				}, false);
+			</script>
+		<% } %>
+	<script type="text/javascript">
+		$('body').on('click', 'button', function(){
+			var id = $(this).attr('data-id');
+			$.ajax({
+				type: 'POST',
+				url: 'delete',
+				data: {id: id},
+				success: function(result){
+					if(result){
+						$('.todo_old_list table tbody tr[data-id='+id+']').fadeOut();
+						setTimeout(function(){
+							$('.todo_old_list table tbody tr[data-id='+id+']').remove();
+						}, 1500);
+					}
+				},
+				error: function(err){
+					console.log(err);
+				}
+			});
+		});
+	</script>
+	<% } %>
+
+	<% if(current_url === '/register'){ %>
+		<script type="text/javascript">
+			jQuery(document).ready(function($){
+				$('form').submit(function(e){
+					$this = $(this);
+					let name = $('input[name=name]');
+					let email = $('input[name=email]');
+					let pwd = $('input[name=password]');
+					var err = false;
+
+					$('.err_main').hide();
+					$('#sign_red_bar').hide();
+					$('#sign_red_bar ul').empty();
+					$('.err_main').empty();
+
+					if(name.val() === ''){
+						e.preventDefault();
+						err = true;
+						$('#sign_red_bar').show();
+						$('#sign_red_bar ul').append('<li>Name is required</li>');
+					}
+					if(email.val() === ''){
+						e.preventDefault();
+						err = true;
+						$('#sign_red_bar').show();
+						$('#sign_red_bar ul').append('<li>Email is required</li>');
+					}
+					if(pwd.val() === ''){
+						e.preventDefault();
+						err = true;
+						$('#sign_red_bar').show();
+						$('#sign_red_bar ul').append('<li>Password is required</li>');
+					}
+					if(!err){
+						$this.submit();
+					}
+				});
+			});
+		</script>
+	<% } %>
+</body>
+</html>
