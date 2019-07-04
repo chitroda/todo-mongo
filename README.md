@@ -10,6 +10,7 @@
   <li>You will see a port number printed, just hit that url in your browser.
   <ul>
     <li><strong>Note: </strong>If 8080 port is being used by other application in your local system then you may change 'port' constant in index.js file.</li>
+    <li><strong>Note: </strong>First create database in mongo db and change database parameters in index.js file.</li>
   </ul>
     </li>
   <li>You have to first sign up in order to use to-do app.</li>
