@@ -27,9 +27,9 @@ app.use('/public', express.static('public'));
 app.use('/', todo);
 
 // MongoDB config
-const MONGO_HOSTNAME = '127.0.0.1';
-const MONGO_PORT = '27017';
-const MONGO_DB = 'mongo_todo';
+const MONGO_HOSTNAME = '';
+const MONGO_PORT = '';
+const MONGO_DB = '';
 const url = `mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}`;
 mongoose.connect(url, {useNewUrlParser: true})
 .then(() => console.log('Connection Successful'))
